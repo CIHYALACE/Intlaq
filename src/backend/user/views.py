@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.permissions import AllowAny
-from .models import Employee, User
+from .models import Employee, Employer, User
 from .serializers import EmployeeSerializer
 from django.contrib.auth.hashers import make_password
 from django.core.mail import EmailMultiAlternatives
@@ -89,29 +89,82 @@ def send_activation_email(user, request):
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def register_user(request):
+    """
+    Register a new user (Employee or Employer).
+
+    Expected payload for Employee:
+        {
+            "role": "employee",
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "john@example.com",
+            "password": "secret",
+            "national_id": "1234567890",
+            "city": "Riyadh"
+        }
+
+    Expected payload for Employer:
+        {
+            "role": "employer",
+            "first_name": "Acme",
+            "last_name": "Inc",
+            "email": "hr@acme.com",
+            "password": "secret",
+            "company_name": "Acme Corporation"
+        }
+    """
     data = request.data
+    role = str(data.get('role', '')).lower()
+
+    if role not in ["employee", "employer"]:
+        return Response({"error": "Role must be either 'employee' or 'employer'."}, status=status.HTTP_400_BAD_REQUEST)
+
+    common_required = ["first_name", "last_name", "email", "password"]
+    missing_common = [f for f in common_required if f not in data or data[f] in ["", None]]
+
+    if role == "employee":
+        specific_required = ["national_id", "city"]
+    else: 
+        specific_required = ["company_name"]
+
+    missing_specific = [f for f in specific_required if f not in data or data[f] in ["", None]]
+
+    if missing_common or missing_specific:
+        return Response(
+            {"error": f"Missing required fields: {', '.join(missing_common + missing_specific)}"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
     try:
         user = User.objects.create(
-            username=data['email'],
-            first_name=data['first_name'],
-            last_name=data['last_name'],
-            email=data['email'],
-            password=make_password(data['password']),
-            is_active=False
+            username=data["email"],
+            first_name=data["first_name"],
+            last_name=data["last_name"],
+            email=data["email"],
+            password=make_password(data["password"]),
+            is_active=False,
         )
 
-        Employee.objects.create(
-            user=user,
-            national_id=data['national_id'],
-            city=data['city'],
-        )
+        if role == "employee":
+            Employee.objects.create(
+                user=user,
+                national_id=data["national_id"],
+                city=data["city"],
+            )
+        else:
+            from django.utils import timezone 
+            Employer.objects.create(
+                user=user,
+                company_name=data["company_name"],
+                created_at=timezone.now(),
+            )
 
         send_activation_email(user, request)
+        return Response({"message": "User registered successfully. Please check your email to activate the account."}, status=201)
 
-        return Response({'message': 'User registered successfully'}, status=201)
     except Exception as e:
         logger.error(f"Error in register_user: {str(e)}\n{traceback.format_exc()}")
-        return Response({'error': str(e)}, status=400)
+        return Response({"error": str(e)}, status=400)
 
 
 @api_view(['GET'])

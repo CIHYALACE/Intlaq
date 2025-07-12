@@ -35,6 +35,7 @@ class Employee(models.Model):
 class Employer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=255)
+    verified = models.BooleanField(default=False)
     created_at = models.DateTimeField()
 
     def __str__(self):
