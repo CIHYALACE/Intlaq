@@ -4,7 +4,11 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from .models import Employee, Employer, User
-from .serializers import EmployeeSerializer
+from .serializers import EmployeeSerializer, EmployerSerializer, EmployeeUpdateSerializer, EmployerUpdateSerializer
+
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django.contrib.auth.hashers import make_password
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
@@ -24,12 +28,60 @@ logger = logging.getLogger(__name__)
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
-    http_method_names = ['get', 'post', 'put', 'delete']
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
 
     def get_permissions(self):
         if self.request.method == 'GET':
             return [AllowAny()]
-        return super().get_permissions()
+        return [IsAuthenticated()]
+    
+    @action(detail=False, methods=['put', 'patch'], permission_classes=[IsAuthenticated])
+    def me(self, request, *args, **kwargs):
+        try:
+            employee = Employee.objects.get(user=request.user)
+            partial = request.method == 'PATCH'
+            serializer = EmployeeUpdateSerializer(
+                employee, 
+                data=request.data, 
+                partial=partial
+            )
+            
+            if serializer.is_valid():
+                # Handle many-to-many fields
+                employee = serializer.save()
+                
+                # Update programming_languages if provided
+                if 'programming_languages' in request.data:
+                    employee.programming_languages.set(request.data['programming_languages'])
+                
+                # Update skills if provided
+                if 'skills' in request.data:
+                    employee.skills.set(request.data['skills'])
+                
+                # Get the updated instance with related fields
+                updated_employee = Employee.objects.get(id=employee.id)
+                return Response(EmployeeSerializer(updated_employee).data)
+                
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        except Employee.DoesNotExist:
+            return Response(
+                {"error": "Employee profile not found"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+            
+    def get_object(self):
+        if 'me' in self.request.path:
+            return self.get_queryset().get(user=self.request.user)
+        return super().get_object()
+        
+    def retrieve(self, request, *args, **kwargs):
+        if 'me' in request.path:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        return super().retrieve(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         logger.info(f'Received POST request to create trainer profile. Data: {request.data}')
@@ -173,11 +225,84 @@ def activate_user(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:
+        logger.error(f"Activation error: {str(e)}")
+        return Response(
+            {'error': 'Activation link is invalid or has expired'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     if user is not None and default_token_generator.check_token(user, token):
+        if user.is_active:
+            return Response(
+                {'message': 'Account is already activated'}, 
+                status=status.HTTP_200_OK
+            )
+        
         user.is_active = True
         user.save()
-    else:
-        return Response({'error': 'Activation link is invalid!'}, status=400)
+        
+        # For employer, we don't need additional verification
+        try:
+            employer = Employer.objects.get(user=user)
+            employer.verified = True
+            employer.save()
+        except Employer.DoesNotExist:
+            pass  # Not an employer, no need to do anything
+            
+        return Response(
+            {'message': 'Account activated successfully'}, 
+            status=status.HTTP_200_OK
+        )
+    
+    return Response(
+        {'error': 'Activation link is invalid or has expired'}, 
+        status=status.HTTP_400_BAD_REQUEST
+    )
+
+
+class EmployerViewSet(viewsets.ModelViewSet):
+    queryset = Employer.objects.all()
+    serializer_class = EmployerSerializer
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAuthenticated()]
+    
+    @action(detail=False, methods=['put', 'patch'], permission_classes=[IsAuthenticated])
+    def me(self, request, *args, **kwargs):
+        try:
+            employer = Employer.objects.get(user=request.user)
+            partial = request.method == 'PATCH'
+            serializer = EmployerUpdateSerializer(
+                employer, 
+                data=request.data, 
+                partial=partial
+            )
+            
+            if serializer.is_valid():
+                serializer.save()
+                return Response(EmployerSerializer(employer).data)
+                
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        except Employer.DoesNotExist:
+            return Response(
+                {"error": "Employer profile not found"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+            
+    def get_object(self):
+        if 'me' in self.request.path:
+            return self.get_queryset().get(user=self.request.user)
+        return super().get_object()
+        
+    def retrieve(self, request, *args, **kwargs):
+        if 'me' in request.path:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        return super().retrieve(request, *args, **kwargs)

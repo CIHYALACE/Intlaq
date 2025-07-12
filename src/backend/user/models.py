@@ -5,13 +5,20 @@ from django.contrib.auth.models import AbstractUser
 
 # Custom User model
 class User(AbstractUser):
+    email = models.EmailField(unique=True)
+    
+    # Use email as the USERNAME_FIELD for authentication
+    USERNAME_FIELD = 'email'
+    # Remove email from REQUIRED_FIELDS since it's now the USERNAME_FIELD
+    REQUIRED_FIELDS = ['username']
+    
     @property
     def name(self):
         full_name = f"{self.first_name} {self.last_name}".strip()
-        return full_name if full_name else self.username
+        return full_name if full_name else self.email
 
     def __str__(self):
-        return self.username
+        return self.email
 
 # Employee model
 class Employee(models.Model):
