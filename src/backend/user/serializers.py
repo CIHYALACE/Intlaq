@@ -3,9 +3,11 @@ from .models import Employee, Employer
 
 # Serializer for Employee model
 class EmployeeSerializer(serializers.ModelSerializer):
+    programming_languages = serializers.StringRelatedField(many=True)
+    skills = serializers.StringRelatedField(many=True)
     class Meta:
         model = Employee
-        fields = ['id', 'user', 'resume', 'skills', 'experience', 'education']
+        fields = ['id', 'user', 'resume', 'skills', 'experience_level', 'education', 'programming_languages']
         read_only_fields = ['user']
 
 # Serializer for Employer model
