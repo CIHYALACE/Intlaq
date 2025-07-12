@@ -13,7 +13,7 @@ class User(AbstractUser):
 # Employee model
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    national_id = models.IntegerField( unique=True)
+    national_id = models.BigIntegerField(unique=True)
     city = models.CharField(max_length=100)
     bio = models.TextField(blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
