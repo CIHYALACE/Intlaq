@@ -1,5 +1,6 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError, PermissionDenied
 from .models import Job, Application
 from .serializers import JobSerializer, ApplicationSerializer
 
@@ -52,8 +53,14 @@ class ApplicationViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         if hasattr(self.request.user, 'employee'):
-            employee = self.request.user.employee
-            serializer.save(employee=employee)
+            job_id = serializer.validated_data['job'].id
+            if Application.objects.filter(
+                employee=self.request.user.employee,
+                job_id=job_id
+                ).exists():
+                raise ValidationError({'job': 'You have already applied to this job'})
+
+            serializer.save(employee=self.request.user.employee)
         else:
             raise PermissionDenied("Only employees can submit applications")
 
