@@ -75,6 +75,18 @@ class ApplicationViewSet(viewsets.ModelViewSet):
         
         return queryset
 
+    def perform_update(self, serializer):
+        application = self.get_object()
+        
+        # Only allow employer who owns the job to update the status
+        if hasattr(self.request.user, 'employer') and application.job.employer == self.request.user.employer:
+            if 'status' in serializer.validated_data:
+                serializer.save()
+            else:
+                raise ValidationError({'detail': 'Only the status field can be updated by employers'})
+        else:
+            raise PermissionDenied("You don't have permission to update this application")
+
     def destroy(self, request, *args, **kwargs):
         application = self.get_object()
 
