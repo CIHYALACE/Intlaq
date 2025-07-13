@@ -1,14 +1,16 @@
+# Rest Framework imports
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.permissions import AllowAny
-from .models import Employee, Employer, User
-from .serializers import EmployeeSerializer, EmployerSerializer, EmployeeUpdateSerializer, EmployerUpdateSerializer
-
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from rest_framework.decorators import permission_classes
+from .models import Employee, Employer, User
+from .serializers import EmployeeSerializer, EmployerSerializer, EmployeeUpdateSerializer, EmployerUpdateSerializer
+# Django imports
 from django.contrib.auth.hashers import make_password
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
@@ -17,8 +19,8 @@ from django.utils.encoding import force_bytes
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.contrib.auth.tokens import default_token_generator
-from rest_framework.decorators import permission_classes
 from django.utils.html import strip_tags
+# Logging imports
 import logging
 import traceback
 
@@ -242,13 +244,13 @@ def activate_user(request, uidb64, token):
         user.is_active = True
         user.save()
         
-        # For employer, we don't need additional verification
+        
         try:
             employer = Employer.objects.get(user=user)
             employer.verified = True
             employer.save()
         except Employer.DoesNotExist:
-            pass  # Not an employer, no need to do anything
+            pass
             
         return Response(
             {'message': 'Account activated successfully'}, 
