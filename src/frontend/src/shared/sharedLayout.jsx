@@ -1,4 +1,5 @@
 import NavBar from "../components/navBar";
+import Footer from "../components/footer";
 import { Outlet } from "react-router-dom";
 
 export default function SharedLayout() {
@@ -6,6 +7,7 @@ export default function SharedLayout() {
         <>
             <NavBar />
             <Outlet />
+            <Footer />
         </>
     )
 }
