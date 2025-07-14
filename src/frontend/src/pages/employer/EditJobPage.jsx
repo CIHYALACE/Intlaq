@@ -1,5 +1,5 @@
 import React from 'react';
-import JobPostForm from '../../components/JobPostForm';
+import JobPostForm from '../../components/employer/JobPostForm';
 
 export default function EditJobPage() {
   return (
