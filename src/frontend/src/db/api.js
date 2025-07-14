@@ -82,6 +82,9 @@ api.interceptors.response.use(
 const Register_URL = `${API_BASE_URL}/register/`;
 const Login_URL = `${API_BASE_URL}/token/`;
 
+const loginUser = (credentials) => api.post(Login_URL, credentials);
+const registerUser = (userData) => api.post(Register_URL, userData);
+
 // ! For Employees Endpoints
 const Employees_URL = `${API_BASE_URL}/employees/`;
 const getEmployees = () => api.get(Employees_URL);
@@ -114,6 +117,8 @@ const deleteApplication = (id) => api.delete(`${Applications_URL}${id}/`);
 
 
 export {
+    loginUser,
+    registerUser,
     getEmployees,
     getEmployee,
     updateEmployee,
