@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LoginForm = () => {
+export default function LoginForm () {
   // TODO: Add form logic
   return (
     <form>
@@ -16,5 +16,3 @@ const LoginForm = () => {
     </form>
   );
 };
-
-export default LoginForm;

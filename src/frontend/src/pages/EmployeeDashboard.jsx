@@ -1,6 +1,6 @@
 import React from 'react';
 
-const EmployeeDashboard = () => {
+export default function EmployeeDashboard(){
   return (
     <div>
       <h1>Employee Dashboard</h1>
@@ -8,5 +8,3 @@ const EmployeeDashboard = () => {
     </div>
   );
 };
-
-export default EmployeeDashboard;

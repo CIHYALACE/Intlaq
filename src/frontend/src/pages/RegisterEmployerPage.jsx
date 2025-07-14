@@ -1,7 +1,7 @@
 import React from 'react';
 import RegisterForm from '../components/RegisterForm';
 
-const RegisterEmployerPage = () => {
+export default function RegisterEmployerPage(){
   return (
     <div>
       <h1>Register as Employer</h1>
@@ -9,5 +9,3 @@ const RegisterEmployerPage = () => {
     </div>
   );
 };
-
-export default RegisterEmployerPage;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MyApplicationsPage = () => {
+export default function MyApplicationsPage(){
   return (
     <div>
       <h1>My Applications</h1>
@@ -8,5 +8,3 @@ const MyApplicationsPage = () => {
     </div>
   );
 };
-
-export default MyApplicationsPage;

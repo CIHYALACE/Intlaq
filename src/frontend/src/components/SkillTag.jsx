@@ -1,11 +1,9 @@
 import React from 'react';
 
-const SkillTag = ({ skill }) => {
+export default function SkillTag({ skill }){
   return (
     <span>
       {skill}
     </span>
   );
 };
-
-export default SkillTag;

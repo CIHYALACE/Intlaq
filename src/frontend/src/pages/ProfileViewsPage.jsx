@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ProfileViewsPage = () => {
+export default function ProfileViewsPage(){
   return (
     <div>
       <h1>Profile Views</h1>
@@ -8,5 +8,3 @@ const ProfileViewsPage = () => {
     </div>
   );
 };
-
-export default ProfileViewsPage;

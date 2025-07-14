@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ProfileCard = ({ profile }) => {
+export default function ProfileCard ({ profile }) {
   return (
     <div>
       <h2>{profile.name}</h2>
@@ -9,5 +9,3 @@ const ProfileCard = ({ profile }) => {
     </div>
   );
 };
-
-export default ProfileCard;

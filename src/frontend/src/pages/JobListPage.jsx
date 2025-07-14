@@ -1,6 +1,6 @@
 import React from 'react';
 
-const JobListPage = () => {
+export default function JobListPage(){
   return (
     <div>
       <h1>Job List</h1>
@@ -8,5 +8,3 @@ const JobListPage = () => {
     </div>
   );
 };
-
-export default JobListPage;

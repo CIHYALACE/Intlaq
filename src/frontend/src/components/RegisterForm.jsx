@@ -1,6 +1,6 @@
 import React from 'react';
 
-const RegisterForm = ({ type }) => {
+export default function RegisterForm({ type }){
   // TODO: Add form logic and fields specific to employee/employer
   return (
     <form>
@@ -26,5 +26,3 @@ const RegisterForm = ({ type }) => {
     </form>
   );
 };
-
-export default RegisterForm;

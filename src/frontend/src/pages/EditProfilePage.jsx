@@ -1,6 +1,6 @@
 import React from 'react';
 
-const EditProfilePage = () => {
+export default function EditProfilePage(){
   return (
     <div>
       <h1>Edit Profile</h1>
@@ -8,5 +8,3 @@ const EditProfilePage = () => {
     </div>
   );
 };
-
-export default EditProfilePage;

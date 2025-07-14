@@ -1,6 +1,6 @@
 import React from 'react';
 
-const NotificationsPage = () => {
+export default function NotificationsPage(){
   return (
     <div>
       <h1>Notifications</h1>
@@ -8,5 +8,3 @@ const NotificationsPage = () => {
     </div>
   );
 };
-
-export default NotificationsPage;
