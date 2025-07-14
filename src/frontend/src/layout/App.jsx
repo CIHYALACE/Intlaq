@@ -4,6 +4,7 @@ import HomePage from '../pages/homePage';
 
 // Auth Pages
 import LoginPage from '../pages/LoginPage';
+import RegisterPage from '../pages/RegisterPage';
 
 // Employer Pages
 import EmployerDashboard from '../pages/EmployerDashboard';
@@ -27,7 +28,8 @@ export default function App() {
         <Route index element={<HomePage />} />
 
         {/* Auth Routes */}
-        <Route path="login" element={<LoginPage />} />
+                <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<RegisterPage />} />
 
         {/* Employer Routes */}
         <Route path="employer/dashboard" element={<EmployerDashboard />} />
