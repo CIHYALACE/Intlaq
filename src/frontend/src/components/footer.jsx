@@ -1,69 +1,65 @@
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+  
   return (
-    <div className="container-fluid p-0 my-5">
+    <div className="container-fluid p-0 mt-5">
       <footer
         className="text-center text-lg-start text-white"
-        style={{backgroundColor: "#929fba"}}
+        style={{backgroundColor: "#2c3e50"}}
       >
         <div className="container p-4 pb-0">
           <section className="">
             <div className="row">
-              <div className="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+              <div className="col-md-4 col-lg-4 col-xl-4 mx-auto mt-3">
                 <h6 className="text-uppercase mb-4 font-weight-bold">
-                  Company name
+                  Intilaq
                 </h6>
                 <p>
-                  Here you can use rows and columns to organize your footer
-                  content. Lorem ipsum dolor sit amet, consectetur adipisicing
-                  elit.
+                  Connecting top talent with leading employers. Our platform makes it easy to find your dream job or the perfect candidate.
                 </p>
               </div>
 
-              <hr className="w-100 clearfix d-md-none" />
-
-              <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
-                <h6 className="text-uppercase mb-4 font-weight-bold">Products</h6>
+              <div className="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                <h6 className="text-uppercase mb-4 font-weight-bold">Quick Links</h6>
                 <p>
-                  <a className="text-white">MDBootstrap</a>
+                  <a href="/jobs" className="text-white text-decoration-none">Browse Jobs</a>
                 </p>
                 <p>
-                  <a className="text-white">MDWordPress</a>
+                  <a href="/employees" className="text-white text-decoration-none">Find Employees</a>
                 </p>
                 <p>
-                  <a className="text-white">BrandFlow</a>
+                  <a href="/about" className="text-white text-decoration-none">About Us</a>
                 </p>
                 <p>
-                  <a className="text-white">Bootstrap Angular</a>
+                  <a href="/contact" className="text-white text-decoration-none">Contact Us</a>
                 </p>
               </div>
-
-              <hr className="w-100 clearfix d-md-none" />
-
-              <hr className="w-100 clearfix d-md-none" />
 
               <div className="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
                 <h6 className="text-uppercase mb-4 font-weight-bold">Contact</h6>
                 <p>
-                  <i className="fas fa-home mr-3"></i> New York, NY 10012, US
+                  <i className="fas fa-home mr-3"></i> 123 Job Street, Career City
                 </p>
                 <p>
-                  <i className="fas fa-envelope mr-3"></i> info@gmail.com
+                  <i className="fas fa-envelope mr-3"></i> info@intilaq.com
                 </p>
                 <p>
-                  <i className="fas fa-phone mr-3"></i> + 01 234 567 88
+                  <i className="fas fa-phone mr-3"></i> +1 234 567 890
                 </p>
                 <p>
-                  <i className="fas fa-print mr-3"></i> + 01 234 567 89
+                  <i className="fas fa-clock mr-3"></i> Mon - Fri: 9:00 AM - 6:00 PM
                 </p>
               </div>
 
               <div className="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
-                <h6 className="text-uppercase mb-4 font-weight-bold">Follow us</h6>
+                <h6 className="text-uppercase mb-4 font-weight-bold">Follow Us</h6>
 
                 <a
                   className="btn btn-primary btn-floating m-1"
                   style={{backgroundColor: "#3b5998"}}
-                  href="#!"
+                  href="https://facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   role="button"
                 >
                   <i className="fab fa-facebook-f"></i>
@@ -71,8 +67,10 @@ export default function Footer() {
 
                 <a
                   className="btn btn-primary btn-floating m-1"
-                  style={{backgroundColor: "#55acee"}}
-                  href="#!"
+                  style={{backgroundColor: "#1DA1F2"}}
+                  href="https://twitter.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   role="button"
                 >
                   <i className="fab fa-twitter"></i>
@@ -80,51 +78,32 @@ export default function Footer() {
 
                 <a
                   className="btn btn-primary btn-floating m-1"
-                  style={{backgroundColor: "#dd4b39"}}
-                  href="#!"
-                  role="button"
-                >
-                  <i className="fab fa-google"></i>
-                </a>
-
-                <a
-                  className="btn btn-primary btn-floating m-1"
-                  style={{backgroundColor: "#ac2bac"}}
-                  href="#!"
-                  role="button"
-                >
-                  <i className="fab fa-instagram"></i>
-                </a>
-
-                <a
-                  className="btn btn-primary btn-floating m-1"
-                  style={{backgroundColor: "#0082ca"}}
-                  href="#!"
+                  style={{backgroundColor: "#0077B5"}}
+                  href="https://linkedin.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   role="button"
                 >
                   <i className="fab fa-linkedin-in"></i>
                 </a>
+
                 <a
                   className="btn btn-primary btn-floating m-1"
-                  style={{backgroundColor: "#333333"}}
-                  href="#!"
+                  style={{backgroundColor: "#E1306C"}}
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   role="button"
                 >
-                  <i className="fab fa-github"></i>
+                  <i className="fab fa-instagram"></i>
                 </a>
               </div>
             </div>
           </section>
         </div>
 
-        <div
-          className="text-center p-3"
-          style={{backgroundColor: "rgba(0, 0, 0, 0.2)"}}
-        >
-          © 2020 Copyright:
-          <a className="text-white" href="https://mdbootstrap.com/">
-            MDBootstrap.com
-          </a>
+        <div className="text-center p-3" style={{backgroundColor: "rgba(0, 0, 0, 0.2)"}}>
+          &copy; {currentYear} Intilaq. All rights reserved.
         </div>
       </footer>
     </div>
