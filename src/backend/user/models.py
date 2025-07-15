@@ -13,9 +13,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=15, choices=USER_TYPE_CHOICES, default='employee')
     email = models.EmailField(unique=True)
     
-    # Use email as the USERNAME_FIELD for authentication
     USERNAME_FIELD = 'email'
-    # Remove email from REQUIRED_FIELDS since it's now the USERNAME_FIELD
     REQUIRED_FIELDS = ['username']
     
     @property

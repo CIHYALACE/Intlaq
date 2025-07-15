@@ -18,19 +18,16 @@ class IsEmployee(permissions.BasePermission):
 class JobViewSet(viewsets.ModelViewSet):
     queryset = Job.objects.all().order_by('-created_at')
     serializer_class = JobSerializer
-    authentication_classes = []  # Disable default authentication
+    authentication_classes = []
     
     def get_authenticators(self):
-        # No authentication for safe methods (GET, HEAD, OPTIONS)
         if self.request.method in ('GET', 'HEAD', 'OPTIONS'):
             return []
         return super().get_authenticators()
 
     def get_permissions(self):
-        # Allow anyone to view jobs (list and retrieve)
         if self.request.method in ('GET', 'HEAD', 'OPTIONS'):
             return [permissions.AllowAny()]
-        # Require authentication and employer role for write operations
         return [permissions.IsAuthenticated(), IsEmployer()]
 
     def perform_create(self, serializer):
@@ -55,19 +52,16 @@ class JobViewSet(viewsets.ModelViewSet):
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all().select_related('user')
     serializer_class = EmployeeSerializer
-    authentication_classes = []  # Disable default authentication
+    authentication_classes = []
     
     def get_authenticators(self):
-        # No authentication for safe methods (GET, HEAD, OPTIONS)
         if self.request.method in ('GET', 'HEAD', 'OPTIONS'):
             return []
         return super().get_authenticators()
 
     def get_permissions(self):
-        # Allow anyone to view employees (list and retrieve)
         if self.request.method in ('GET', 'HEAD', 'OPTIONS'):
             return [permissions.AllowAny()]
-        # Require authentication and employer role for write operations
         return [permissions.IsAuthenticated(), IsEmployer()]
 
     def get_queryset(self):
@@ -109,7 +103,6 @@ class ApplicationViewSet(viewsets.ModelViewSet):
 
         employee_profile = request.user.employee
         
-        # Check if the employee has already applied for this job
         job_id = request.data.get('job')
         if Application.objects.filter(employee=employee_profile, job_id=job_id).exists():
             return Response(
@@ -160,7 +153,6 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         application = self.get_object()
         
-        # Only allow employer who owns the job to update the status
         if hasattr(self.request.user, 'employer') and application.job.employer == self.request.user.employer:
             if 'status' in serializer.validated_data:
                 serializer.save()

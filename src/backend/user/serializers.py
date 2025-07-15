@@ -40,7 +40,6 @@ class EmployerUpdateSerializer(serializers.ModelSerializer):
         model = Employer
         fields = ['company_name']
 
-# Existing serializers (keep these for other views)
 class EmployeeSerializer(serializers.ModelSerializer):
     programming_languages = ProgrammingLanguageSerializer(many=True, read_only=True)
     skills = SkillSerializer(many=True, read_only=True)
@@ -55,7 +54,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        # Add custom claims
         token['role'] = user.role
         token['first_name'] = user.first_name
         token['last_name'] = user.last_name

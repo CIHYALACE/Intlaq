@@ -9,7 +9,6 @@ export default function NavBar() {
       const token = localStorage.getItem('access_token');
       setToken(token);
       if (token) {
-        // Decode the token to get user role
         try {
           const payload = JSON.parse(atob(token.split('.')[1]));
           setUserRole(payload.user_type);

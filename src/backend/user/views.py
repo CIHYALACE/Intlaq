@@ -51,18 +51,14 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             )
             
             if serializer.is_valid():
-                # Handle many-to-many fields
                 employee = serializer.save()
                 
-                # Update programming_languages if provided
                 if 'programming_languages' in request.data:
                     employee.programming_languages.set(request.data['programming_languages'])
                 
-                # Update skills if provided
                 if 'skills' in request.data:
                     employee.skills.set(request.data['skills'])
                 
-                # Get the updated instance with related fields
                 updated_employee = Employee.objects.get(id=employee.id)
                 return Response(EmployeeSerializer(updated_employee).data)
                 
@@ -161,7 +157,7 @@ def register_user(request):
     specific_required = []
     if role == "employee":
         specific_required = ["national_id", "city"]
-    else: # employer
+    else:
         specific_required = ["company_name"]
 
     required_fields = common_required + specific_required
@@ -181,7 +177,7 @@ def register_user(request):
             email=data["email"],
             password=make_password(data["password"]),
             role=role,
-            is_active=False,  # Users will be activated via email link
+            is_active=False,
         )
 
         if role == "employee":
@@ -196,7 +192,7 @@ def register_user(request):
                 company_name=data["company_name"]
             )
 
-        send_activation_email(user, request)  # Send activation email to the user
+        send_activation_email(user, request)
         return Response({"message": "User registered successfully. Please check your email to activate your account."}, status=status.HTTP_201_CREATED)
 
 
@@ -216,21 +212,17 @@ def activate_user(request, uidb64, token):
         user = User.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:
         logger.error(f"Activation error: {str(e)}")
-        # Redirect to frontend with error status
         frontend_url = f"{settings.FRONTEND_BASE_URL}/activate/?status=error&message=Activation link is invalid or has expired"
         return redirect(frontend_url)
 
     if user is not None and default_token_generator.check_token(user, token):
         if user.is_active:
-            # Redirect to frontend with already activated status
             frontend_url = f"{settings.FRONTEND_BASE_URL}/activate/?status=already_active"
             return redirect(frontend_url)
         
-        # Activate the user
         user.is_active = True
         user.save()
         
-        # If user is an employer, mark as verified
         try:
             employer = Employer.objects.get(user=user)
             employer.verified = True
@@ -238,11 +230,9 @@ def activate_user(request, uidb64, token):
         except Employer.DoesNotExist:
             pass
             
-        # Redirect to frontend with success status
         frontend_url = f"{settings.FRONTEND_BASE_URL}/activate/?status=success"
         return redirect(frontend_url)
     
-    # If we get here, the token is invalid
     frontend_url = f"{settings.FRONTEND_BASE_URL}/activate/?status=error&message=Activation link is invalid or has expired"
     return redirect(frontend_url)
 
