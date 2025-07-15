@@ -1,5 +1,4 @@
 import { Routes, Route } from 'react-router-dom';
-import MainLayout from './MainLayout';
 import SharedLayout from '../shared/sharedLayout';
 import HomePage from '../pages/homePage';
 
@@ -25,7 +24,7 @@ export default function App() {
   return (
     <Routes>
       {/* Routes with Navbar and Footer */}
-      <Route element={<MainLayout />}>
+      <Route element={<SharedLayout />}>
         <Route index element={<HomePage />} />
 
         {/* Dashboard Routes */}
