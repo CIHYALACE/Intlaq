@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getEmployees, getEmployers, getJobs, getApplications } from "../db/api";
 import HeroSection from "../components/HeroSection"
 import HowItWorksSection from "../components/HowItWorksSection";
+import FeaturesSection from "./employer/FeaturesSection";
 
 export default function HomePage() {
     const [employees, setEmployees] = useState([]);
@@ -69,6 +70,7 @@ export default function HomePage() {
         <div>
             <HeroSection />
             <HowItWorksSection />
+            <FeaturesSection />
         </div>
     );
 }
