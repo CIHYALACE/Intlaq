@@ -196,7 +196,7 @@ def register_user(request):
                 company_name=data["company_name"]
             )
 
-        # send_activation_email(user, request) # Temporarily disable to avoid email errors during dev
+        send_activation_email(user, request)  # Send activation email to the user
         return Response({"message": "User registered successfully. Please check your email to activate your account."}, status=status.HTTP_201_CREATED)
 
 
@@ -204,6 +204,9 @@ def register_user(request):
         logger.error(f"Error in register_user: {str(e)}\n{traceback.format_exc()}")
         return Response({"error": str(e)}, status=400)
 
+
+from django.shortcuts import redirect
+from django.conf import settings
 
 @api_view(['GET'])
 @permission_classes([permissions.AllowAny])
@@ -213,22 +216,21 @@ def activate_user(request, uidb64, token):
         user = User.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:
         logger.error(f"Activation error: {str(e)}")
-        return Response(
-            {'error': 'Activation link is invalid or has expired'}, 
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        # Redirect to frontend with error status
+        frontend_url = f"{settings.FRONTEND_BASE_URL}/activate/?status=error&message=Activation link is invalid or has expired"
+        return redirect(frontend_url)
 
     if user is not None and default_token_generator.check_token(user, token):
         if user.is_active:
-            return Response(
-                {'message': 'Account is already activated'}, 
-                status=status.HTTP_200_OK
-            )
+            # Redirect to frontend with already activated status
+            frontend_url = f"{settings.FRONTEND_BASE_URL}/activate/?status=already_active"
+            return redirect(frontend_url)
         
+        # Activate the user
         user.is_active = True
         user.save()
         
-        
+        # If user is an employer, mark as verified
         try:
             employer = Employer.objects.get(user=user)
             employer.verified = True
@@ -236,15 +238,13 @@ def activate_user(request, uidb64, token):
         except Employer.DoesNotExist:
             pass
             
-        return Response(
-            {'message': 'Account activated successfully'}, 
-            status=status.HTTP_200_OK
-        )
+        # Redirect to frontend with success status
+        frontend_url = f"{settings.FRONTEND_BASE_URL}/activate/?status=success"
+        return redirect(frontend_url)
     
-    return Response(
-        {'error': 'Activation link is invalid or has expired'}, 
-        status=status.HTTP_400_BAD_REQUEST
-    )
+    # If we get here, the token is invalid
+    frontend_url = f"{settings.FRONTEND_BASE_URL}/activate/?status=error&message=Activation link is invalid or has expired"
+    return redirect(frontend_url)
 
 
 class EmployerViewSet(viewsets.ModelViewSet):

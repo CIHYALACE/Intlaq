@@ -1,4 +1,34 @@
+import React, { useState, useEffect } from 'react';
+
+
 export default function NavBar() {
+  const [token, setToken] = useState(null);
+  console.log(token);
+
+  useEffect(() => {
+    const updateToken = () => {
+      const token = localStorage.getItem('access_token');
+      setToken(token);
+    };
+
+    // Initial check
+    updateToken();
+
+    // Listen for the custom event
+    window.addEventListener('storage', updateToken);
+
+    // Cleanup listener
+    return () => {
+      window.removeEventListener('storage', updateToken);
+    };
+  }, []);
+  
+  const HandleSignOut =() => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    window.location.reload();
+  }
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
@@ -71,19 +101,25 @@ export default function NavBar() {
                 aria-expanded="false"
               >
                 <img 
-                  src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" 
+                  src={token? "https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" : "https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg"} 
                   className="rounded-circle" 
                   height="22" 
                   alt="Profile"
                   loading="lazy" 
                 />
               </a>
+              { token? 
               <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown1">
                 <li><a className="dropdown-item" href="#">Action</a></li>
                 <li><a className="dropdown-item" href="#">Another action</a></li>
                 <li><hr className="dropdown-divider" /></li>
-                <li><a className="dropdown-item" href="#">Sign out</a></li>
+                <li><a className="dropdown-item" href="#" onClick={HandleSignOut}>Sign out</a></li>
+              </ul>:
+              <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown1">
+                <li><a className="dropdown-item" href="/login">Sign in</a></li>
+                <li><a className="dropdown-item" href="/register">Sign up</a></li>
               </ul>
+              }
             </li>
           </ul>
         </div>

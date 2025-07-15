@@ -26,6 +26,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
     # Registration and activation
-    path('register/', register_user, name='register_user'),
+    path('api/register/', register_user, name='register_user'),
     path('activate/<uidb64>/<token>/', activate_user, name='activate_user')
 ]
