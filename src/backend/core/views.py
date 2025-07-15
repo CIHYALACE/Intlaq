@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from .models import Job, Application
 from .serializers import JobSerializer, ApplicationSerializer
+from user.serializers import EmployeeSerializer
 
 class IsEmployer(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -50,6 +51,50 @@ class JobViewSet(viewsets.ModelViewSet):
         if job.employer.user != request.user:
             return Response({'detail': 'Not allowed.'}, status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
+
+class EmployeeViewSet(viewsets.ModelViewSet):
+    queryset = Employee.objects.all().select_related('user')
+    serializer_class = EmployeeSerializer
+    authentication_classes = []  # Disable default authentication
+    
+    def get_authenticators(self):
+        # No authentication for safe methods (GET, HEAD, OPTIONS)
+        if self.request.method in ('GET', 'HEAD', 'OPTIONS'):
+            return []
+        return super().get_authenticators()
+
+    def get_permissions(self):
+        # Allow anyone to view employees (list and retrieve)
+        if self.request.method in ('GET', 'HEAD', 'OPTIONS'):
+            return [permissions.AllowAny()]
+        # Require authentication and employer role for write operations
+        return [permissions.IsAuthenticated(), IsEmployer()]
+
+    def get_queryset(self):
+        queryset = self.queryset
+        
+        search = self.request.query_params.get('q', '')
+        if search:
+            queryset = queryset.filter(
+                models.Q(user__username__icontains=search) |
+                models.Q(user__first_name__icontains=search) |
+                models.Q(user__last_name__icontains=search) |
+                models.Q(title__icontains=search)
+            )
+        
+        location = self.request.query_params.get('location', '')
+        if location:
+            queryset = queryset.filter(location__icontains=location)
+        
+        skills = self.request.query_params.get('skills', '')
+        if skills:
+            queryset = queryset.filter(skills__name__icontains=skills)
+        
+        experience = self.request.query_params.get('exp', '')
+        if experience:
+            queryset = queryset.filter(experience_level=experience)
+        
+        return queryset
 
 class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all().order_by('-applied_at')

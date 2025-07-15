@@ -12,6 +12,7 @@ import AdminDashboard from '../pages/AdminDashboard';
 
 // Job Pages
 import JobsPage from '../pages/JobsPage';
+import EmployeesPage from '../pages/EmployeesPage';
 
 // Employer Pages
 import PostJobPage from '../pages/PostJobPage';
@@ -30,8 +31,9 @@ export default function App() {
       <Route element={<SharedLayout />}>
         <Route index element={<HomePage />} />
 
-        {/* Job Listings */}
+        {/* Public Listings */}
         <Route path="/jobs" element={<JobsPage />} />
+        <Route path="/employees" element={<EmployeesPage />} />
 
         {/* Dashboard Routes */}
         <Route path="employee/dashboard" element={<EmployeeDashboard />} />

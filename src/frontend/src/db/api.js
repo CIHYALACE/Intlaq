@@ -95,7 +95,7 @@ const registerUser = (userData) => api.post(Register_URL, userData);
 
 // ! For Employees Endpoints
 const Employees_URL = `${API_BASE_URL}/employees/`;
-const getEmployees = () => api.get(Employees_URL);
+const getEmployees = (filters = {}) => api.get(Employees_URL, { params: filters });
 const getEmployee = (id) => api.get(`${Employees_URL}${id}/`);
 const updateEmployee = (id, employee) => api.put(`${Employees_URL}${id}/`, employee);
 const deleteEmployee = (id) => api.delete(`${Employees_URL}${id}/`);

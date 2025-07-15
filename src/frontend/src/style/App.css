@@ -29,3 +29,14 @@
   background-color: var(--bs-primary);
   color: white;
 }
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 1rem 1.5rem rgba(0,0,0,0.1) !important;
+}
+.transition-all {
+  transition: all 0.25s ease;
+}
+.avatar img {
+  object-fit: cover;
+}
