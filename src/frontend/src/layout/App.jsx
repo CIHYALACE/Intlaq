@@ -10,6 +10,9 @@ import EmployeeDashboard from '../pages/EmployeeDashboard';
 import EmployerDashboard from '../pages/EmployerDashboard';
 import AdminDashboard from '../pages/AdminDashboard';
 
+// Job Pages
+import JobsPage from '../pages/JobsPage';
+
 // Employer Pages
 import PostJobPage from '../pages/PostJobPage';
 import JobApplicantsPage from '../pages/JobApplicantsPage';
@@ -26,6 +29,9 @@ export default function App() {
       {/* Routes with Navbar and Footer */}
       <Route element={<SharedLayout />}>
         <Route index element={<HomePage />} />
+
+        {/* Job Listings */}
+        <Route path="/jobs" element={<JobsPage />} />
 
         {/* Dashboard Routes */}
         <Route path="employee/dashboard" element={<EmployeeDashboard />} />

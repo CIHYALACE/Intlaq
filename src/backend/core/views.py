@@ -17,11 +17,20 @@ class IsEmployee(permissions.BasePermission):
 class JobViewSet(viewsets.ModelViewSet):
     queryset = Job.objects.all().order_by('-created_at')
     serializer_class = JobSerializer
+    authentication_classes = []  # Disable default authentication
+    
+    def get_authenticators(self):
+        # No authentication for safe methods (GET, HEAD, OPTIONS)
+        if self.request.method in ('GET', 'HEAD', 'OPTIONS'):
+            return []
+        return super().get_authenticators()
 
     def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [permissions.IsAuthenticated(), IsEmployer()]
-        return [permissions.AllowAny()]
+        # Allow anyone to view jobs (list and retrieve)
+        if self.request.method in ('GET', 'HEAD', 'OPTIONS'):
+            return [permissions.AllowAny()]
+        # Require authentication and employer role for write operations
+        return [permissions.IsAuthenticated(), IsEmployer()]
 
     def perform_create(self, serializer):
         employer = self.request.user.employer

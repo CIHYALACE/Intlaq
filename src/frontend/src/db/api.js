@@ -13,11 +13,19 @@ const api = axios.create({
 // Add a request interceptor to add the auth token
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('access_token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        } else {
-            console.warn('No access token found for request to:', config.url);
+        // Skip adding token for public endpoints
+        const publicEndpoints = ['/jobs', '/jobs/'];
+        const isPublicEndpoint = publicEndpoints.some(endpoint => 
+            config.url.endsWith(endpoint) && config.method === 'get'
+        );
+        
+        if (!isPublicEndpoint) {
+            const token = localStorage.getItem('access_token');
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            } else if (config.url !== '/token/' && config.url !== '/token/refresh/') {
+                console.warn('No access token found for request to:', config.url);
+            }
         }
         return config;
     },
@@ -101,7 +109,7 @@ const deleteEmployer = (id) => api.delete(`${Employers_URL}${id}/`);
 
 // ! For Jobs Endpoints
 const Jobs_URL = `${API_BASE_URL}/jobs/`;
-const getJobs = () => api.get(Jobs_URL);
+const getJobs = (filters = {}) => api.get(Jobs_URL, { params: filters });
 const getJob = (id) => api.get(`${Jobs_URL}${id}/`);
 const createJob = (job) => api.post(Jobs_URL, job);
 const updateJob = (id, job) => api.put(`${Jobs_URL}${id}/`, job);
