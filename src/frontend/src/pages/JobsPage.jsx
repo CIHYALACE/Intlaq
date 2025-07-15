@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getJobs } from '../db/api';
+import JobCard from '../components/JobCard';
 
 const JobsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -67,7 +68,7 @@ const JobsPage = () => {
   };
 
   return (
-    <div className="container-fluid py-4">
+    <div className="container-fluid py-4 bg-white bg-light" style={{ backgroundColor: '#ffffff' }}>
       <div className="row">
         {/* Sidebar Filters */}
         <div className="col-lg-3 mb-4">
@@ -182,56 +183,21 @@ const JobsPage = () => {
               </div>
               <p className="mt-2">Loading jobs...</p>
             </div>
-          ) : jobs.length > 0 ? (
-            <div className="list-group">
-              {jobs.map((job) => (
-                <div key={job.id} className="list-group-item list-group-item-action mb-3 rounded shadow-sm">
-                  <div className="d-flex w-100 justify-content-between">
-                    <div>
-                      <h5 className="mb-1">{job.title}</h5>
-                      <p className="mb-1">{job.company} • {job.location}</p>
-                      <div className="d-flex flex-wrap gap-2 mt-2">
-                        <span className="badge bg-primary">{job.type}</span>
-                        <span className="badge bg-secondary">{job.experience}</span>
-                        <span className="badge bg-success">{job.salary}</span>
-                      </div>
-                    </div>
-                    <small className="text-muted">{job.posted}</small>
-                  </div>
-                  <p className="mb-1 mt-2">
-                    {job.description.length > 200 
-                      ? `${job.description.substring(0, 200)}...` 
-                      : job.description}
-                  </p>
-                  <a href={`/jobs/${job.id}`} className="btn btn-outline-primary btn-sm mt-2">
-                    View Details
-                  </a>
-                </div>
-              ))}
-            </div>
           ) : (
-            <div className="text-center py-5">
-              <i className="fas fa-briefcase fa-4x text-muted mb-3"></i>
-              <h4>No jobs found</h4>
-              <p className="text-muted">Try adjusting your search or filter criteria</p>
+            <div>
+              {jobs.length > 0 ? (
+                <div className="list-group">
+                  {jobs.map((job) => (
+                    <JobCard key={job.id} job={job} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-5">
+                  <i className="fas fa-briefcase fa-4x text-muted mb-3"></i>
+                  <p className="text-muted">No jobs found matching your criteria.</p>
+                </div>
+              )}
             </div>
-          )}
-
-          {/* Pagination */}
-          {jobs.length > 0 && (
-            <nav aria-label="Job pagination" className="mt-4">
-              <ul className="pagination justify-content-center">
-                <li className="page-item disabled">
-                  <a className="page-link" href="#" tabIndex="-1" aria-disabled="true">Previous</a>
-                </li>
-                <li className="page-item active"><a className="page-link" href="#">1</a></li>
-                <li className="page-item"><a className="page-link" href="#">2</a></li>
-                <li className="page-item"><a className="page-link" href="#">3</a></li>
-                <li className="page-item">
-                  <a className="page-link" href="#">Next</a>
-                </li>
-              </ul>
-            </nav>
           )}
         </div>
       </div>

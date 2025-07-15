@@ -117,6 +117,17 @@ const deleteJob = (id) => api.delete(`${Jobs_URL}${id}/`);
 
 // ! For Applications Endpoints
 const Applications_URL = `${API_BASE_URL}/applications/`;
+
+// ! Helper Functions
+const getEmployerDetails = async (employerId) => {
+  try {
+    const response = await api.get(`${Employers_URL}${employerId}/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching employer details:', error);
+    return null;
+  }
+};
 const getApplications = () => api.get(Applications_URL);
 const getApplicationsForJob = (jobId) => api.get(`${Applications_URL}?job=${jobId}`);
 const getApplication = (id) => api.get(`${Applications_URL}${id}/`);
@@ -133,6 +144,7 @@ const deleteAdmin = (id) => api.delete(`${Admins_URL}${id}/`);
 
 
 export {
+    getEmployerDetails,
     loginUser,
     registerUser,
     getEmployees,
