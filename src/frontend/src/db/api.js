@@ -110,10 +110,18 @@ const deleteJob = (id) => api.delete(`${Jobs_URL}${id}/`);
 // ! For Applications Endpoints
 const Applications_URL = `${API_BASE_URL}/applications/`;
 const getApplications = () => api.get(Applications_URL);
+const getApplicationsForJob = (jobId) => api.get(`${Applications_URL}?job=${jobId}`);
 const getApplication = (id) => api.get(`${Applications_URL}${id}/`);
 const createApplication = (application) => api.post(Applications_URL, application);
 const updateApplication = (id, application) => api.put(`${Applications_URL}${id}/`, application);
 const deleteApplication = (id) => api.delete(`${Applications_URL}${id}/`);
+
+// ! For Admins Endpoints
+const Admins_URL = `${API_BASE_URL}/admins/`;
+const getAdmins = () => api.get(Admins_URL);
+const getAdmin = (id) => api.get(`${Admins_URL}${id}/`);
+const updateAdmin = (id, admin) => api.put(`${Admins_URL}${id}/`, admin);
+const deleteAdmin = (id) => api.delete(`${Admins_URL}${id}/`);
 
 
 export {
@@ -136,5 +144,10 @@ export {
     getApplication,
     createApplication,
     updateApplication,
-    deleteApplication
+    deleteApplication,
+    getApplicationsForJob,
+    getAdmins,
+    getAdmin,
+    updateAdmin,
+    deleteAdmin
 }

@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import EmployeeViewSet, EmployerViewSet, register_user, activate_user
+from .views import EmployeeViewSet, EmployerViewSet, register_user, activate_user, MyTokenObtainPairView
 from .authentication import EmailTokenObtainPairView
 
 # Create a router and register our viewsets with it.
@@ -22,7 +22,7 @@ urlpatterns = [
     path('api/employers/me/', EmployerViewSet.as_view({'get': 'retrieve','put': 'me','patch': 'me'}), name='employer-me'),
     
     # Authentication endpoints
-    path('api/token/', EmailTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
     # Registration and activation

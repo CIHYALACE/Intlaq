@@ -1,9 +1,16 @@
+from timeit import default_timer
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
 # Custom User model
 class User(AbstractUser):
+    USER_TYPE_CHOICES = (
+        ('employee', 'Employee'),
+        ('employer', 'Employer'),
+        ('admin', 'Admin'),
+    )
+    role = models.CharField(max_length=15, choices=USER_TYPE_CHOICES, default='employee')
     email = models.EmailField(unique=True)
     
     # Use email as the USERNAME_FIELD for authentication
@@ -42,7 +49,7 @@ class Employer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=255)
     verified = models.BooleanField(default=False)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.company_name

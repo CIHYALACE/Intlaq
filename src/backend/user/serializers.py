@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Employee, Employer
 from core.models import ProgrammingLanguage, Skill
 
@@ -49,6 +50,16 @@ class EmployeeSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'resume', 'skills', 'experience_level', 
                  'education', 'programming_languages', 'bio', 'city', 'phone_number']
         read_only_fields = ['user']
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # Add custom claims
+        token['role'] = user.role
+        token['first_name'] = user.first_name
+        token['last_name'] = user.last_name
+        return token
 
 class EmployerSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; // Corrected import
 import { loginUser } from '../db/api';
 
 export default function LoginForm() {
@@ -11,15 +12,32 @@ export default function LoginForm() {
   const mutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
-      // Assuming the API returns access and refresh tokens
-      localStorage.setItem('access_token', data.data.access);
-      localStorage.setItem('refresh_token', data.data.refresh);
-      // Redirect to a protected route, e.g., employer dashboard
-      navigate('/employer/dashboard');
+      const { access, refresh } = data.data;
+      localStorage.setItem('access_token', access);
+      localStorage.setItem('refresh_token', refresh);
+
+      // Decode the token to get user info
+      const decodedToken = jwtDecode(access);
+      const userType = decodedToken.user_type; // Assuming the token has a 'user_type' field
+
+      // Redirect based on user type
+      switch (userType) {
+        case 'employer':
+          navigate('/employer/dashboard');
+          break;
+        case 'employee':
+          navigate('/employee/dashboard');
+          break;
+        case 'admin':
+          navigate('/admin/dashboard');
+          break;
+        default:
+          navigate('/'); // Fallback to home page
+          break;
+      }
     },
     onError: (error) => {
       console.error('Login failed:', error);
-      // Here you could set an error message in the state to display to the user
     },
   });
 

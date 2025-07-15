@@ -6,20 +6,19 @@ import HomePage from '../pages/homePage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 
-// Employer Pages
+// Dashboard Pages
+import EmployeeDashboard from '../pages/EmployeeDashboard';
 import EmployerDashboard from '../pages/EmployerDashboard';
+import AdminDashboard from '../pages/AdminDashboard';
+
+// Employer Pages
 import PostJobPage from '../pages/PostJobPage';
-import MyJobsPage from '../pages/MyJobsPage';
-import EditJobPage from '../pages/EditJobPage';
 import JobApplicantsPage from '../pages/JobApplicantsPage';
-import SearchEmployeesPage from '../pages/SearchEmployeesPage';
-import ViewEmployeeProfilePage from '../pages/ViewEmployeeProfilePage';
-import RequestMatchesPage from '../pages/RequestMatchesPage';
 
 // Admin Pages
-import AdminDashboard from '../pages/AdminDashboard';
 import ManageUsersPage from '../pages/ManageUsersPage';
 import ManageJobsPage from '../pages/ManageJobsPage';
+import EditProfilePage from '../pages/EditProfilePage';
 
 export default function App() {
   return (
@@ -31,20 +30,21 @@ export default function App() {
                 <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
 
-        {/* Employer Routes */}
+        {/* Dashboard Routes */}
+        <Route path="employee/dashboard" element={<EmployeeDashboard />} />
         <Route path="employer/dashboard" element={<EmployerDashboard />} />
+        <Route path="admin/dashboard" element={<AdminDashboard />} />
+
+        {/* Employer Routes */}
         <Route path="employer/jobs/post" element={<PostJobPage />} />
-        <Route path="employer/jobs" element={<MyJobsPage />} />
-        <Route path="employer/jobs/edit/:id" element={<EditJobPage />} />
-        <Route path="employer/jobs/:id/applicants" element={<JobApplicantsPage />} />
-        <Route path="employer/employees/search" element={<SearchEmployeesPage />} />
-        <Route path="employer/employees/:id" element={<ViewEmployeeProfilePage />} />
-        <Route path="employer/matches/request" element={<RequestMatchesPage />} />
+                <Route path="employer/jobs/:id/applicants" element={<JobApplicantsPage />} />
 
         {/* Admin Routes */}
-        <Route path="admin/dashboard" element={<AdminDashboard />} />
         <Route path="admin/users" element={<ManageUsersPage />} />
         <Route path="admin/jobs" element={<ManageJobsPage />} />
+
+        {/* Profile Route */}
+        <Route path="profile/edit" element={<EditProfilePage />} />
 
       </Route>
     </Routes>

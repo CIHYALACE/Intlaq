@@ -1,5 +1,7 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
+from user.models import Employee
+from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from .models import Job, Application
 from .serializers import JobSerializer, ApplicationSerializer
@@ -43,6 +45,32 @@ class JobViewSet(viewsets.ModelViewSet):
 class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all().order_by('-applied_at')
     serializer_class = ApplicationSerializer
+
+    def create(self, request, *args, **kwargs):
+        if not hasattr(request.user, 'employee'):
+            return Response(
+                {"error": "Only users with an employee profile can submit applications."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        employee_profile = request.user.employee
+        
+        # Check if the employee has already applied for this job
+        job_id = request.data.get('job')
+        if Application.objects.filter(employee=employee_profile, job_id=job_id).exists():
+            return Response(
+                {"error": "You have already applied for this job."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        data = request.data.copy()
+        data['employee'] = employee_profile.id
+
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
