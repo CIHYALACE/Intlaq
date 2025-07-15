@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { getEmployees } from '../db/api';
-import EmployeeCard from '../components/employee/EmployeeCard';
+import { getEmployees } from '../../db/api';
+import EmployeeCard from '../../components/employee/EmployeeCard';
 
 const EmployeesPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();

@@ -7,7 +7,6 @@ export const getCurrentUser = () => {
   }
   try {
     const decodedToken = jwtDecode(token);
-    // Assuming the token payload has user_id and user_type
     return { 
       id: decodedToken.user_id, 
       role: decodedToken.role 

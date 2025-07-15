@@ -27,7 +27,6 @@ import ActivationSuccess from '../pages/ActivationSuccess';
 export default function App() {
   return (
     <Routes>
-      {/* Routes with Navbar and Footer */}
       <Route element={<SharedLayout />}>
         <Route index element={<HomePage />} />
 

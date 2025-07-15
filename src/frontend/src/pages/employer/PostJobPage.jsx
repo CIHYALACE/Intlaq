@@ -1,5 +1,5 @@
 import React from 'react';
-import JobPostForm from '../../components/employer/JobPostForm';
+import JobPostForm from '../components/JobPostForm';
 
 export default function PostJobPage() {
   return (
@@ -8,4 +8,4 @@ export default function PostJobPage() {
       <JobPostForm />
     </div>
   );
-};
+}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // Corrected import
+import { jwtDecode } from 'jwt-decode';
 import { loginUser } from '../db/api';
 
 export default function LoginForm() {
@@ -23,11 +23,9 @@ export default function LoginForm() {
       localStorage.setItem('refresh_token', refresh);
       window.dispatchEvent(new Event('storage'));
 
-      // Decode the token to get user info
       const decodedToken = jwtDecode(access);
-      const userType = decodedToken.user_type; // Assuming the token has a 'user_type' field
+      const userType = decodedToken.user_type;
 
-      // Redirect based on user type
       switch (userType) {
         case 'employer':
           navigate('/employer/dashboard');
@@ -39,7 +37,7 @@ export default function LoginForm() {
           navigate('/admin/dashboard');
           break;
         default:
-          navigate('/'); // Fallback to home page
+          navigate('/');
           break;
       }
     },

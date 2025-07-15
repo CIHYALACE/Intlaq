@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateEmployer } from '../db/api';
+import { updateEmployer } from '../../db/api';
 
 export default function EmployerProfileForm({ employerData }) {
   const queryClient = useQueryClient();

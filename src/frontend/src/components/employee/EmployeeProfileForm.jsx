@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateEmployee } from '../db/api';
+import { updateEmployee } from '../../db/api';
 
 export default function EmployeeProfileForm({ employeeData, onUpdate }) {
   const [formData, setFormData] = useState({ full_name: '', email: '' });
@@ -11,7 +11,6 @@ export default function EmployeeProfileForm({ employeeData, onUpdate }) {
       setFormData({
         full_name: employeeData.full_name || '',
         email: employeeData.email || '',
-        // Add other employee fields here
       });
     }
   }, [employeeData]);
@@ -49,7 +48,6 @@ export default function EmployeeProfileForm({ employeeData, onUpdate }) {
         <label>Email</label>
         <input type="email" name="email" value={formData.email} onChange={handleChange} required />
       </div>
-      {/* Add other form fields as needed */}
       <button type="submit" disabled={mutation.isPending}>
         {mutation.isPending ? 'Updating...' : 'Update Profile'}
       </button>

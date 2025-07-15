@@ -10,7 +10,7 @@ export default function RegisterForm() {
     last_name: '',
     password: '',
     confirmPassword: '',
-    role: 'employee', // default to employee
+    role: 'employee',
     company_name: '',
     national_id: '',
     city: ''
@@ -22,12 +22,10 @@ export default function RegisterForm() {
   const mutation = useMutation({
     mutationFn: registerUser,
     onSuccess: () => {
-      // On successful registration, redirect to the login page
       navigate('/login');
     },
     onError: (error) => {
       console.error('Registration failed:', error);
-      // You can display a more specific error message based on the response
     },
   });
 
@@ -60,7 +58,6 @@ export default function RegisterForm() {
     
     const dataToSubmit = { ...formData };
     
-    // Clean up the data before sending
     delete dataToSubmit.confirmPassword;
     delete dataToSubmit.full_name;
     

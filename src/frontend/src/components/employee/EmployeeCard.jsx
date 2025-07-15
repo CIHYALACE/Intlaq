@@ -6,12 +6,10 @@ export default function EmployeeCard({ employee, job }) {
     return null;
   }
 
-  // Ensure skills is an array and limit to 3 items
   const displaySkills = Array.isArray(employee.skills) 
     ? employee.skills.slice(0, 3) 
     : [];
 
-  // Generate a unique key for each skill
   const getSkillKey = (skill, index) => 
     `${employee.id}-skill-${index}-${String(skill).substring(0, 10)}`;
 
@@ -27,7 +25,7 @@ export default function EmployeeCard({ employee, job }) {
               alt={employee.name}
               className="rounded-circle border border-3 border-white shadow-sm"
               onError={(e) => {
-                e.target.onerror = null; // Prevent infinite loop
+                e.target.onerror = null;
                 e.target.src = 'https://via.placeholder.com/120';
               }}
             />

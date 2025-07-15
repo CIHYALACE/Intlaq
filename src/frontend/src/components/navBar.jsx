@@ -20,13 +20,10 @@ export default function NavBar() {
       }
     };
 
-    // Initial check
     updateAuth();
 
-    // Listen for the custom event
     window.addEventListener('storage', updateAuth);
 
-    // Cleanup listener
     return () => {
       window.removeEventListener('storage', updateAuth);
     };
@@ -74,7 +71,6 @@ export default function NavBar() {
             </div>
           </form>
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            {/* Always show these links to all users */}
             <li className="nav-item">
               <a className="nav-link" href="/jobs">Job Listings</a>
             </li>
@@ -82,7 +78,6 @@ export default function NavBar() {
               <a className="nav-link" href="/employees">Find Employees</a>
             </li>
 
-            {/* Show additional links for authenticated users */}
             {token && (
               <>
                 <li className="nav-item">

@@ -26,7 +26,6 @@ export default function JobDetailsModal({ job, show, onHide }) {
     const token = localStorage.getItem('access_token');
     
     if (!token) {
-      // User is not logged in
       Swal.fire({
         title: 'Login Required',
         text: 'Please login to apply for this job.',
@@ -53,17 +52,14 @@ export default function JobDetailsModal({ job, show, onHide }) {
       setLoading(true);
       setError('');
       
-      // Get user ID from token
       const payload = JSON.parse(atob(token.split('.')[1]));
       const userId = payload.user_id;
 
-      // Create application
       await createApplication({
         job: job.id,
         applicant: userId
       });
 
-      // Show success message
       Swal.fire({
         title: 'Success!',
         text: 'Your application has been submitted successfully!',
@@ -76,7 +72,6 @@ export default function JobDetailsModal({ job, show, onHide }) {
         padding: '2rem'
       });
       
-      // Close modal
       onHide();
     } catch (error) {
       console.error('Error applying:', error);

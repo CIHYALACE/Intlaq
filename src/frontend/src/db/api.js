@@ -2,7 +2,6 @@ import axios from "axios";
 
 const API_BASE_URL = "http://127.0.0.1:8000/api";
 
-// Create axios instance with base URL
 const api = axios.create({
     baseURL: API_BASE_URL,
     headers: {
@@ -10,10 +9,8 @@ const api = axios.create({
     },
 });
 
-// Add a request interceptor to add the auth token
 api.interceptors.request.use(
     (config) => {
-        // Skip adding token for public endpoints
         const publicEndpoints = ['/jobs', '/jobs/'];
         const isPublicEndpoint = publicEndpoints.some(endpoint => 
             config.url.endsWith(endpoint) && config.method === 'get'
@@ -35,7 +32,6 @@ api.interceptors.request.use(
     }
 );
 
-// Add a response interceptor to handle token refresh
 api.interceptors.response.use(
     (response) => {
         return response;
@@ -48,7 +44,6 @@ api.interceptors.response.use(
 
         const originalRequest = error.config;
         
-        // If the error status is 401 and we haven't tried to refresh the token yet
         if (error.response.status === 401 && !originalRequest._retry) {
             console.log('Received 401, attempting token refresh...');
             originalRequest._retry = true;
@@ -67,10 +62,8 @@ api.interceptors.response.use(
                 }
             } catch (refreshError) {
                 console.error('Error refreshing token:', refreshError);
-                // Clear invalid tokens
                 localStorage.removeItem('access_token');
                 localStorage.removeItem('refresh_token');
-                // window.location.href = '/login';
                 return Promise.reject(refreshError);
             }
         }
