@@ -6,21 +6,21 @@ import HomePage from '../pages/homePage';
 import AccountPage from '../pages/auth/AccountPage';
 
 // Dashboard Pages
-import EmployeeDashboard from '../pages/EmployeeDashboard';
-import EmployerDashboard from '../pages/EmployerDashboard';
-import AdminDashboard from '../pages/AdminDashboard';
+import EmployeeDashboard from '../pages/employee/EmployeeDashboard';
+import EmployerDashboard from '../pages/employer/EmployerDashboard';
+import AdminDashboard from '../pages/admin/AdminDashboard';
 
 // Job Pages
 import JobsPage from '../pages/JobsPage';
-import EmployeesPage from '../pages/EmployeesPage';
+import EmployeesPage from '../pages/employee/EmployeesPage';
 
 // Employer Pages
-import PostJobPage from '../pages/PostJobPage';
+import PostJobPage from '../pages/employer/PostJobPage';
 import JobApplicantsPage from '../pages/JobApplicantsPage';
 
 // Admin Pages
-import ManageUsersPage from '../pages/ManageUsersPage';
-import ManageJobsPage from '../pages/ManageJobsPage';
+import ManageUsersPage from '../pages/admin/ManageUsersPage';
+import ManageJobsPage from '../pages/admin/ManageJobsPage';
 import EditProfilePage from '../pages/EditProfilePage';
 import ActivationSuccess from '../pages/ActivationSuccess';
 

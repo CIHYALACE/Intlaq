@@ -2,8 +2,8 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getEmployee, getEmployer, getAdmin } from '../db/api';
 import { getCurrentUser } from '../utils/auth';
-import EmployeeProfileForm from '../components/EmployeeProfileForm';
-import EmployerProfileForm from '../components/EmployerProfileForm';
+import EmployeeProfileForm from '../components/employee/EmployeeProfileForm';
+import EmployerProfileForm from '../components/employer/EmployerProfileForm';
 import AdminProfileForm from '../components/AdminProfileForm';
 
 export default function EditProfilePage() {
