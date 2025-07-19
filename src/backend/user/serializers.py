@@ -41,13 +41,14 @@ class EmployerUpdateSerializer(serializers.ModelSerializer):
         fields = ['company_name']
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.ImageField(use_url=True)
     programming_languages = ProgrammingLanguageSerializer(many=True, read_only=True)
     skills = SkillSerializer(many=True, read_only=True)
     
     class Meta:
         model = Employee
         fields = ['id', 'user', 'full_name', 'national_id', 'resume', 'skills', 'experience_level', 
-                 'education', 'programming_languages', 'bio', 'city', 'phone_number']
+                 'education', 'programming_languages', 'bio', 'city', 'phone_number', 'profile_picture']
         read_only_fields = ['user']
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

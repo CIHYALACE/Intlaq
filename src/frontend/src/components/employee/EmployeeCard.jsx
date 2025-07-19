@@ -21,12 +21,13 @@ export default function EmployeeCard({ employee, job }) {
         <div className="card-body p-4 text-center">
           <div className="avatar avatar-xl mb-3">
             <img
-              src={employee.image}
+              src={employee.profile_picture || '/images/male.png'}
               alt={employee.name}
               className="rounded-circle border border-3 border-white shadow-sm"
+              style={{ objectFit: 'cover' , width: '120px', height: '120px' }}
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = 'https://via.placeholder.com/120';
+                e.target.src = '/images/male.png';
               }}
             />
           </div>
