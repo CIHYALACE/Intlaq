@@ -20,7 +20,7 @@ class City(models.Model):
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     national_id = models.BigIntegerField(unique=True)
-    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='employees', default=None)
+    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='employees', null=True, blank=True)
     bio = models.TextField(blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     experience_level = models.CharField(max_length=50, blank=True, null=True)
@@ -38,7 +38,7 @@ class Employee(models.Model):
 class Employer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=255)
-    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='employers', null=True)
+    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='employers', null=True, blank=True)
     verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
