@@ -22,6 +22,14 @@ class Skill(models.Model):
     def __str__(self):
         return self.name
 
+# City model
+class City(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+    
+
 # Profile view model
 class ProfileView(models.Model):
     employee = models.ForeignKey("user.Employee", on_delete=models.CASCADE)
@@ -33,7 +41,7 @@ class Job(models.Model):
     employer = models.ForeignKey("user.Employer", on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
-    city = models.CharField(max_length=100)
+    city = models.ForeignKey("core.City", on_delete=models.CASCADE , related_name='jobs')
 
     experience_level = models.CharField(max_length=50, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

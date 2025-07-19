@@ -2,6 +2,7 @@ from timeit import default_timer
 from django.db import models
 from django.contrib.auth.models import User
 
+
 EXPERIENCE_LEVEL_CHOICES = [
     ('intern', 'Intern'),
     ('junior', 'Junior'),
@@ -10,17 +11,11 @@ EXPERIENCE_LEVEL_CHOICES = [
     ('expert', 'Expert'),
 ]
 
-class City(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-
-    def __str__(self):
-        return self.name
-
 # Employee model
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     national_id = models.BigIntegerField(unique=True)
-    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='employees', null=True, blank=True)
+    city = models.ForeignKey('core.City', on_delete=models.CASCADE, related_name='employees')
     bio = models.TextField(blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     experience_level = models.CharField(max_length=50, blank=True, null=True)
@@ -38,7 +33,7 @@ class Employee(models.Model):
 class Employer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=255)
-    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='employers', null=True, blank=True)
+    city = models.ForeignKey('core.City', on_delete=models.CASCADE, related_name='employers')
     verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
