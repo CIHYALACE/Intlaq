@@ -29,13 +29,17 @@ class Employee(models.Model):
     city = models.ForeignKey('core.City', on_delete=models.CASCADE, related_name='employees')
     bio = models.TextField(blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
-    experience_level = models.CharField(max_length=50, blank=True, null=True)
+    experience_level = models.CharField(max_length=50, blank=True, null=True, choices=EXPERIENCE_LEVEL_CHOICES)
     programming_languages = models.ManyToManyField("core.ProgrammingLanguage", blank=True)
     skills = models.ManyToManyField("core.Skill", blank=True)
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     education = models.TextField(blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
 
     def __str__(self):
         return f"{self.user.username} - {self.city}"
