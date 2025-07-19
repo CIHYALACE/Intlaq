@@ -1,6 +1,7 @@
 from timeit import default_timer
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 
 
 EXPERIENCE_LEVEL_CHOICES = [
@@ -11,10 +12,20 @@ EXPERIENCE_LEVEL_CHOICES = [
     ('expert', 'Expert'),
 ]
 
+egypt_id_validator = RegexValidator(
+    regex=r'^(2|3)[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])[0-9]{7}$',
+    message="Enter a valid 14-digit Egyptian National ID."
+)
+
+egypt_phone_validator = RegexValidator(
+    regex=r'^01[0125][0-9]{8}$',
+    message="Enter a valid 11-digit Egyptian mobile number starting with 010, 011, 012, or 015."
+)
+
 # Employee model
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    national_id = models.BigIntegerField(unique=True)
+    national_id = models.BigIntegerField(unique=True, validators=[egypt_id_validator])
     city = models.ForeignKey('core.City', on_delete=models.CASCADE, related_name='employees')
     bio = models.TextField(blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
