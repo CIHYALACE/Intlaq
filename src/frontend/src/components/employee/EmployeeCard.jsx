@@ -33,7 +33,7 @@ export default function EmployeeCard({ employee, job }) {
 
           <h4 className="mb-1 fw-bold">
             {typeof employee.user === 'number' 
-              ? `Employee #${employee.user}`
+              ? `${employee.full_name}`
               : employee.user?.username?.slice(0, 10) || 'Unknown Employee'}
           </h4>
 
