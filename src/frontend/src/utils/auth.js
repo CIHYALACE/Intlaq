@@ -9,7 +9,8 @@ export const getCurrentUser = () => {
     const decodedToken = jwtDecode(token);
     return { 
       id: decodedToken.user_id, 
-      role: decodedToken.role 
+      email: decodedToken.email,
+      isEmployer: decodedToken.is_employer || false
     };
   } catch (error) {
     console.error('Error decoding token:', error);

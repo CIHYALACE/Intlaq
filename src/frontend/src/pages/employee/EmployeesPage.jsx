@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getEmployees } from '../../db/api';
-import EmployeeCard from '../../components/employee/EmployeeCard';
+import EmployeesList from '../../components/employee/EmployeesList';
+import EmployerAccess from '../../components/employee/EmployerAccess';
+import { getCurrentUser } from '../../utils/auth';
 
 const EmployeesPage = () => {
+  const currentUser = getCurrentUser();
+  const is_employer = currentUser ? currentUser.isEmployer : false;
   const [searchParams, setSearchParams] = useSearchParams();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,30 +23,9 @@ const EmployeesPage = () => {
     const fetchEmployees = async () => {
       setLoading(true);
       try {
-        console.log('Fetching employees with filters:', filters);
         const response = await getEmployees(filters);
-        console.log('Employees API response:', response);
-        const employeesData = response.data || [];
-        console.log('Employees data:', employeesData);
-        console.log('First employee:', employeesData[0]);
-        console.log('First employee structure:', JSON.stringify(employeesData[0], null, 2));
-        console.log('First employee user:', employeesData[0]?.user);
-        console.log('First employee user type:', typeof employeesData[0]?.user);
-        console.log('First employee user properties:', Object.keys(employeesData[0]?.user || {}));
-        console.log('First employee user value:', employeesData[0]?.user);
-        
-        // Check if user is an object
-        if (typeof employeesData[0]?.user === 'object') {
-          console.log('User object properties:', Object.keys(employeesData[0].user));
-          console.log('User object values:', Object.values(employeesData[0].user));
-        }
-        
-        // Try different access methods
-        console.log('User as string:', String(employeesData[0]?.user));
-        console.log('User toString:', employeesData[0]?.user?.toString());
-        console.log('User valueOf:', employeesData[0]?.user?.valueOf());
-        console.log('User JSON:', JSON.stringify(employeesData[0]?.user));
-        
+        const employeesData = response.data || []; 
+
         setEmployees(employeesData);
         setEmployees(employeesData);
       } catch (error) {
@@ -87,7 +70,7 @@ const EmployeesPage = () => {
     <div className="container-fluid py-4">
       <div className="row">
         {/* Sidebar Filters */}
-        <div className="col-lg-3 mb-4">
+        {is_employer && <div className="col-lg-3 mb-4">
           <div className="card shadow-sm">
             <div className="card-body">
               <h5 className="card-title mb-4">Filter Employees</h5>
@@ -175,62 +158,10 @@ const EmployeesPage = () => {
               </form>
             </div>
           </div>
-        </div>
+        </div>}
 
         {/* Employees List */}
-        <div className="col-lg-9">
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2>Find Talent</h2>
-            <div>
-              <span className="text-muted me-2">Sort by:</span>
-              <select className="form-select d-inline-block w-auto">
-                <option>Most Relevant</option>
-                <option>Most Experience</option>
-                <option>Newest</option>
-              </select>
-            </div>
-          </div>
-
-          {loading ? (
-            <div className="text-center py-5">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-              <p className="mt-2">Loading employees...</p>
-            </div>
-          ) : employees.length > 0 ? (
-            <div className="row g-4">
-              {employees.map((employee) => (
-                <div key={employee.id} className="col-md-6 col-lg-4">
-                  <EmployeeCard employee={employee} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-5">
-              <i className="fas fa-users fa-4x text-muted mb-3"></i>
-              <h4>No employees found</h4>
-              <p className="text-muted">Try adjusting your search or filter criteria</p>
-            </div>
-          )}
-
-          {/* Pagination */}
-          {employees.length > 0 && (
-            <nav aria-label="Employees pagination" className="mt-4">
-              <ul className="pagination justify-content-center">
-                <li className="page-item disabled">
-                  <button className="page-link" disabled>Previous</button>
-                </li>
-                <li className="page-item active"><span className="page-link">1</span></li>
-                <li className="page-item"><button className="page-link">2</button></li>
-                <li className="page-item"><button className="page-link">3</button></li>
-                <li className="page-item">
-                  <button className="page-link">Next</button>
-                </li>
-              </ul>
-            </nav>
-          )}
-        </div>
+        {is_employer ? <EmployeesList employees={employees} loading={loading} /> : <EmployerAccess />}
       </div>
     </div>
   );
