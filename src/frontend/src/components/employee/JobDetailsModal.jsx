@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createApplication, getEmployerDetails } from '../../db/api';
+import { getCurrentUser } from '../../utils/auth';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import '@sweetalert2/theme-dark/dark.css';
@@ -23,8 +24,25 @@ export default function JobDetailsModal({ job, show, onHide }) {
   const [error, setError] = useState('');
 
   const handleApply = async () => {
+    const currentUser = getCurrentUser();
+    const is_employer = currentUser ? currentUser.isEmployer : false;
     const token = localStorage.getItem('access_token');
     
+    if (is_employer) {
+      Swal.fire({
+        title: 'Not Allowed',
+        text: 'Only employees can apply to jobs.',
+        icon: 'error',
+        customClass: {
+          confirmButton: 'btn btn-danger'
+        },
+        buttonsStyling: false,
+        width: '350px',
+        padding: '2rem'
+      });
+      return;
+    }
+
     if (!token) {
       Swal.fire({
         title: 'Login Required',
@@ -42,7 +60,16 @@ export default function JobDetailsModal({ job, show, onHide }) {
         padding: '2rem'
       }).then((result) => {
         if (result.isConfirmed) {
+          localStorage.clear()
           navigate('/login', { state: { from: window.location.pathname } });
+        } else if (result.isDismissed) {
+          Swal.fire({
+            title: 'Cancelled',
+            text: 'You cancelled the operation.',
+            icon: 'info',
+            timer: 2000,
+            showConfirmButton: false
+          });
         }
       });
       return;
