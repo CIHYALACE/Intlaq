@@ -70,8 +70,9 @@ const EmployeesPage = () => {
     <div className="container-fluid py-4">
       <div className="row">
         {/* Sidebar Filters */}
-        {is_employer && <div className="col-lg-3 mb-4">
-          <div className="card shadow-sm">
+        {is_employer && 
+        <div className="col-lg-3 mb-4">
+          <div className="card shadow-sm" style={{ position: 'sticky', top: '30px' }}>
             <div className="card-body">
               <h5 className="card-title mb-4">Filter Employees</h5>
               

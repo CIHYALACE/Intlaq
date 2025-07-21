@@ -72,7 +72,7 @@ const JobsPage = () => {
       <div className="row">
         {/* Sidebar Filters */}
         <div className="col-lg-3 mb-4">
-          <div className="card shadow-sm">
+          <div className="card shadow-sm" style={{ position: 'sticky', top: '30px' }}>
             <div className="card-body">
               <h5 className="card-title mb-4">Filter Jobs</h5>
               
