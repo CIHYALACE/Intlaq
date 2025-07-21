@@ -13,6 +13,7 @@ export default function LoginForm() {
   });
   
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState('');
   const navigate = useNavigate();
 
   const mutation = useMutation({
@@ -43,6 +44,14 @@ export default function LoginForm() {
     },
     onError: (error) => {
       console.error('Login failed:', error);
+      if (error.response?.status === 401) {
+        setApiError('Invalid email or password. Please try again.');
+      } else if (error.response?.data?.detail) {
+        // Handle specific error messages from the backend
+        setApiError(error.response.data.detail);
+      } else {
+        setApiError('Login failed. Please check your credentials and try again.');
+      }
     },
   });
 
@@ -78,17 +87,20 @@ export default function LoginForm() {
       return;
     }
     
-    mutation.mutate({ 
-      email: formData.email, 
-      password: formData.password 
-    });
+    // Create form data object
+    const formDataObj = new FormData();
+    formDataObj.append('email', formData.email);
+    formDataObj.append('password', formData.password);
+    
+    // Pass the form data to the mutation
+    mutation.mutate(formDataObj);
   };
 
   return (
     <form onSubmit={handleSubmit} className="h-custom w-100 d-flex flex-column justify-content-center px-4 gap-3 pt-5">
-      {mutation.isError && (
+      {apiError && (
         <div className="alert alert-danger" role="alert">
-          Login failed. Please check your credentials.
+          {apiError}
         </div>
       )}
       <div>

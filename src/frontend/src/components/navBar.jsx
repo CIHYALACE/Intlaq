@@ -119,8 +119,6 @@ export default function NavBar() {
                 <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                   <li><a className="dropdown-item" href="/login">Sign In</a></li>
                   <li><a className="dropdown-item" href="/register">Create Account</a></li>
-                  <li><hr className="dropdown-divider" /></li>
-                  <li><a className="dropdown-item" href="/employer/register">For Employers</a></li>
                 </ul>
               )}
             </li>

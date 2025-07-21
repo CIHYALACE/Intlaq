@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ProfileView, Job, Application, ProgrammingLanguage
+from .models import ProfileView, Job, Application, ProgrammingLanguage, City
 from user.models import User, Employee
 
 # Serializer for ProgrammingLanguage model
@@ -71,3 +71,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
             'job': {'write_only': True, 'required': False},
             'employee': {'write_only': True, 'required': False},
         }
+
+
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = ['id', 'name']

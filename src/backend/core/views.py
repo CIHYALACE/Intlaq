@@ -1,10 +1,11 @@
-from rest_framework import viewsets, permissions, status
+from django.db import models
+from rest_framework import viewsets, permissions, status, generics
 from rest_framework.response import Response
 from user.models import Employee
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, PermissionDenied
-from .models import Job, Application
-from .serializers import JobSerializer, ApplicationSerializer
+from .models import Job, Application, City
+from .serializers import JobSerializer, ApplicationSerializer, CitySerializer
 from user.serializers import EmployeeSerializer
 
 class IsEmployer(permissions.BasePermission):
@@ -171,3 +172,13 @@ class ApplicationViewSet(viewsets.ModelViewSet):
             {'detail': 'You do not have permission to delete this application.'},
             status=status.HTTP_403_FORBIDDEN
         )
+
+
+class CityViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows cities to be viewed.
+    """
+    queryset = City.objects.all().order_by('name')
+    serializer_class = CitySerializer
+    permission_classes = [permissions.AllowAny]
+    pagination_class = None  # Disable pagination for this endpoint

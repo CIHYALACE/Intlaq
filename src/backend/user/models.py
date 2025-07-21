@@ -48,7 +48,7 @@ class Employee(models.Model):
 class Employer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=255)
-    city = models.ForeignKey('core.City', on_delete=models.CASCADE, related_name='employers')
+    city = models.ForeignKey('core.City', on_delete=models.SET_NULL, null=True, blank=True, related_name='employers')
     verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

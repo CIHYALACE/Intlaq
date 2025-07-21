@@ -120,7 +120,7 @@ def send_activation_email(user, request):
     message = f"""
                 <html>
                 <body>
-                    <p>Hi {user.name},</p>
+                    <p>Hi {user.first_name},</p>
                     <p>Please click the link below to activate your Intlaq account:</p>
                     <p><a href="{activation_link}">Activate Account</a></p>
                     <p>If you didn’t request this, you can ignore this email.</p>
@@ -144,60 +144,91 @@ def send_activation_email(user, request):
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def register_user(request):
-    data = request.data
-    role = str(data.get('role', '')).lower()
-
-    if role not in ["employee", "employer"]:
-        return Response({"error": "Role must be either 'employee' or 'employer'."}, status=status.HTTP_400_BAD_REQUEST)
-
-    if User.objects.filter(email=data.get('email')).exists():
-        return Response({"error": "User with this email already exists."}, status=status.HTTP_400_BAD_REQUEST)
-
-    common_required = ["first_name", "last_name", "email", "password"]
-    specific_required = []
-    if role == "employee":
-        specific_required = ["national_id", "city"]
-    else:
-        specific_required = ["company_name"]
-
-    required_fields = common_required + specific_required
-    missing_fields = [f for f in required_fields if not data.get(f)]
-
-    if missing_fields:
-        return Response(
-            {"error": f"Missing required fields: {', '.join(missing_fields)}"},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
     try:
-        user = User.objects.create(
-            username=data["email"],
+        logger.info(f"Registration request received. Data: {request.data}")
+        data = request.data
+        role = str(data.get('role', '')).lower()
+
+        logger.info(f"Processing registration for role: {role}")
+
+        # Validate role
+        if role not in ["employee", "employer"]:
+            error_msg = f"Invalid role: {role}. Must be either 'employee' or 'employer'."
+            logger.warning(error_msg)
+            return Response({"error": error_msg}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if email already exists
+        email = data.get('email')
+        if User.objects.filter(email=email).exists():
+            error_msg = f"User with email {email} already exists."
+            logger.warning(error_msg)
+            return Response({"error": error_msg}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate required fields
+        common_required = ["first_name", "last_name", "email", "password"]
+        role_specific_required = {
+            "employee": ["national_id", "city"],
+            "employer": ["company_name"]
+        }
+        
+        required_fields = common_required + role_specific_required.get(role, [])
+        missing_fields = [f for f in required_fields if not data.get(f)]
+        if missing_fields:
+            error_msg = f"Missing required fields: {', '.join(missing_fields)}"
+            logger.warning(error_msg)
+            return Response(
+                {"error": error_msg, "missing_fields": missing_fields},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Create user
+        logger.info(f"Creating user with email: {email}")
+        user = User.objects.create_user(
+            username=email,
             first_name=data["first_name"],
             last_name=data["last_name"],
-            email=data["email"],
-            password=make_password(data["password"]),
-            role=role,
+            email=email,
+            password=data["password"],
             is_active=False,
         )
 
+        # Create profile based on role
         if role == "employee":
+            logger.info(f"Creating employee profile for user: {user.id}")
             Employee.objects.create(
                 user=user,
                 national_id=data["national_id"],
-                city=data["city"]
+                city_id=data["city"]  # City is required for employees
             )
         elif role == "employer":
-            Employer.objects.create(
-                user=user,
-                company_name=data["company_name"]
-            )
+            logger.info(f"Creating employer profile for user: {user.id}")
+            employer_data = {
+                "user": user,
+                "company_name": data["company_name"].strip(),
+            }
+            # Add city only if provided (optional for employers)
+            if "city" in data and data["city"]:
+                employer_data["city_id"] = data["city"]
+                
+            Employer.objects.create(**employer_data)
 
+        # Send activation email
+        logger.info(f"Sending activation email to: {email}")
         send_activation_email(user, request)
-        return Response({"message": "User registered successfully. Please check your email to activate your account."}, status=status.HTTP_201_CREATED)
-
+        
+        logger.info(f"Successfully registered user: {email}")
+        return Response(
+            {"message": "User registered successfully. Please check your email to activate your account."},
+            status=status.HTTP_201_CREATED
+        )
 
     except Exception as e:
-        logger.error(f"Error in register_user: {str(e)}\n{traceback.format_exc()}")
+        error_msg = f"Error in register_user: {str(e)}"
+        logger.error(f"{error_msg}\n{traceback.format_exc()}")
+        return Response(
+            {"error": "An error occurred during registration. Please try again.", "details": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
         return Response({"error": str(e)}, status=400)
 
 
