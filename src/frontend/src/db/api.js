@@ -21,6 +21,16 @@ api.interceptors.request.use(
         const isAuthExempt = authExemptEndpoints.some(endpoint => 
             config.url.endsWith(endpoint)
         );
+
+        if (!isPublicEndpoint && !isAuthExempt) {
+            const token = localStorage.getItem('access_token');
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            } else if (!isAuthExempt) {
+                console.warn('No access token found for request to:', config.url);
+            }
+        }
+        
         return config;
     },
     (error) => {
@@ -81,16 +91,13 @@ const Register_URL = `${API_BASE_URL}/register/`;
 const Login_URL = `${API_BASE_URL}/token/`;
 
 const loginUser = (formData) => {
-  // Create URLSearchParams object from form data
-  const params = new URLSearchParams();
-  params.append('email', formData.get('email') || formData.email || '');
-  params.append('password', formData.get('password') || formData.password || '');
+  // Extract email and password from form data
+  const credentials = {
+    email: formData.get('email') || formData.email || '',
+    password: formData.get('password') || formData.password || ''
+  };
   
-  return api.post(Login_URL, params.toString(), {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-  }).catch(error => {
+  return api.post(Login_URL, credentials).catch(error => {
     // Handle specific error cases
     if (error.response) {
       // The request was made and the server responded with a status code
