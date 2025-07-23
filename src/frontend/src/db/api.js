@@ -21,15 +21,6 @@ api.interceptors.request.use(
         const isAuthExempt = authExemptEndpoints.some(endpoint => 
             config.url.endsWith(endpoint)
         );
-        
-        if (!isPublicEndpoint && !isAuthExempt) {
-            const token = localStorage.getItem('access_token');
-            if (token) {
-                config.headers.Authorization = `Bearer ${token}`;
-            } else if (!isAuthExempt) {
-                console.warn('No access token found for request to:', config.url);
-            }
-        }
         return config;
     },
     (error) => {

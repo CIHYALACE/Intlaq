@@ -17,9 +17,11 @@ class ProfileViewSerializer(serializers.ModelSerializer):
 
 # Serializer for Job model
 class JobSerializer(serializers.ModelSerializer):
+    city_name = serializers.CharField(source='city.name', read_only=True)
+    
     class Meta:
         model = Job
-        fields = ['id', 'employer', 'title', 'description', 'city', 'experience_level', 'created_at']
+        fields = ['id', 'employer', 'title', 'description', 'city', 'city_name', 'experience_level', 'created_at']
         read_only_fields = ['created_at']
 
 class UserSerializer(serializers.ModelSerializer):

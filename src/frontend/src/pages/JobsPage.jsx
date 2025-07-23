@@ -27,15 +27,15 @@ const JobsPage = () => {
           experience: filters.experience
         };
         
-        console.log('Fetching jobs with filters:', apiFilters);
+        // console.log('Fetching jobs with filters:', apiFilters);
         const response = await getJobs(apiFilters);
-        console.log('Jobs API response:', response);
+        // console.log('Jobs API response:', response);
         // The response data is in response.data
         const jobsData = response.data || [];
-        console.log('Jobs data:', jobsData);
+        // console.log('Jobs data:', jobsData);
         setJobs(jobsData);
       } catch (error) {
-        console.error('Error fetching jobs:', error);
+        // console.error('Error fetching jobs:', error);
         // You might want to set an error state to show to the user
       } finally {
         setLoading(false);

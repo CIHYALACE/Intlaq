@@ -21,11 +21,11 @@ const JobCard = ({ job }) => {
       <div className="d-flex w-100 justify-content-between">
         <div>
           <h5 className="mb-1">{job.title}</h5>
-          <p className="mb-1">{employer?.company_name || "Company"} • {job.city || "Location"}</p>
+          <p className="mb-1">{employer?.company_name || "Company"} • {job.city_name || "Location"}</p>
           <div className="d-flex flex-wrap gap-2 mt-2">
             <span className="badge bg-primary">{job.type || "Hyperd"}</span>
             <span className="badge bg-secondary">{job.experience || "0-3"}</span>
-            <span className="badge bg-success">{job.salary || "none"}</span>
+            <span className="badge bg-success">{job.salary || "none"}$</span>
           </div>
         </div>
         <small className="text-muted">{job.posted || "null"}</small>
