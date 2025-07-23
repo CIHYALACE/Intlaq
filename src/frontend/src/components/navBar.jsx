@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getCurrentUser } from '../utils/auth';
 
 export default function NavBar() {
   const [token, setToken] = useState(null);
@@ -6,17 +7,18 @@ export default function NavBar() {
 
   useEffect(() => {
     const updateAuth = () => {
+      const currentUser = getCurrentUser();
       const token = localStorage.getItem('access_token');
       setToken(token);
-      if (token) {
-        try {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-          setUserRole(payload.user_type);
-        } catch (e) {
-          console.error('Error decoding token:', e);
-        }
+      
+      if (currentUser) {
+        // Set user role based on the isEmployer flag from getCurrentUser
+        const role = currentUser.isEmployer ? 'employer' : 'employee';
+        setUserRole(role);
+        console.log('User role set to:', role);
       } else {
         setUserRole(null);
+        console.log('No user logged in');
       }
     };
 
@@ -110,10 +112,18 @@ export default function NavBar() {
               </a>
               {token ? (
                 <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                  <li><a className="dropdown-item" href="/profile">My Profile</a></li>
-                  <li><a className="dropdown-item" href="/settings">Settings</a></li>
+                  <li><a className="dropdown-item" href={userRole ? `/${userRole}/profile` : '/profile'}>
+                    <i className="fas fa-user-circle me-2"></i>My Profile
+                  </a></li>
+                  <li><a className="dropdown-item" href={userRole ? `/${userRole}/settings` : '/settings'}>
+                    <i className="fas fa-cog me-2"></i>Settings
+                  </a></li>
                   <li><hr className="dropdown-divider" /></li>
-                  <li><a className="dropdown-item" href="#" onClick={handleSignOut}>Sign Out</a></li>
+                  <li>
+                    <a className="dropdown-item text-danger" href="#" onClick={handleSignOut}>
+                      <i className="fas fa-sign-out-alt me-2"></i>Sign Out
+                    </a>
+                  </li>
                 </ul>
               ) : (
                 <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">

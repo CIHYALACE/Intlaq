@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { getEmployee, getEmployer, getAdmin } from '../db/api';
 import { getCurrentUser } from '../utils/auth';
 import EmployeeProfileForm from '../components/employee/EmployeeProfileForm';
-import EmployerProfileForm from '../components/employer/EmployerProfileForm';
 import AdminProfileForm from '../components/AdminProfileForm';
 
 export default function EditProfilePage() {
@@ -36,10 +35,16 @@ export default function EditProfilePage() {
   if (isError) return <span>Error: {error.message}</span>;
 
   return (
-    <div>
+    <div className="container mt-4">
       <h1>Edit Your Profile</h1>
       {isEmployee && data && <EmployeeProfileForm employeeData={data.data} />}
-      {isEmployer && data && <EmployerProfileForm employerData={data.data} />}
+      {isEmployer && data && (
+        <div className="alert alert-info">
+          <h4>Employer Profile Management</h4>
+          <p>Please contact support to update your employer profile information.</p>
+          <p>Email: support@intilaq.com</p>
+        </div>
+      )}
       {isAdmin && data && <AdminProfileForm adminData={data.data} />}
     </div>
   );

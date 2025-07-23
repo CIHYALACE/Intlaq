@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getCurrentUser } from '../utils/auth';
 
 const API_BASE_URL = "http://127.0.0.1:8000/api";
 
@@ -89,6 +90,25 @@ api.interceptors.response.use(
 // ! For Authentication Endpoints
 const Register_URL = `${API_BASE_URL}/register/`;
 const Login_URL = `${API_BASE_URL}/token/`;
+
+// ! For Employer Endpoints
+export const getEmployerJobs = async (employerId) => {
+  if (!employerId) {
+    throw new Error('Employer ID is required');
+  }
+  
+  try {
+    const response = await api.get('/jobs/');
+    const employerJobs = response.data.filter(job => job.employer == employerId);
+    return { data: employerJobs };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getEmployerProfile = (employerId) => {
+  return api.get(`/employers/${employerId}/`);
+};
 
 const loginUser = (formData) => {
   // Extract email and password from form data

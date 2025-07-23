@@ -16,6 +16,7 @@ import EmployeesPage from '../pages/employee/EmployeesPage';
 
 // Employer Pages
 import PostJobPage from '../pages/employer/PostJobPage';
+import EmployerProfilePage from '../pages/employer/EmployerProfilePage';
 import JobApplicantsPage from '../pages/JobApplicantsPage';
 
 // Admin Pages
@@ -46,6 +47,7 @@ export default function App() {
 
         {/* Profile Routes */}
         <Route path="/profile/edit" element={<EditProfilePage />} />
+        <Route path="/employer/profile" element={<EmployerProfilePage />} />
 
         {/* Admin Routes */}
         <Route path="/admin/manage-users" element={<ManageUsersPage />} />
